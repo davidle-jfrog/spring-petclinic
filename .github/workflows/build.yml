@@ -18,6 +18,10 @@ jobs:
       - name: Configure Maven to use Artifactory
         run: jf mvnc --repo-resolve-releases spring-pet-clinic-libs-snapshot --repo-deploy-releases spring-pet-clinic-libs-snapshot-local --repo-resolve-snapshots spring-pet-clinic-libs-snapshot --repo-deploy-snapshots spring-pet-clinic-libs-snapshot-local
 
+      - name: Configure Gradle to use Artifactory
+        run: jf gradlec --repo-resolve spring-pet-clinic-gradle-dev --repo-deploy spring-pet-clinic-gradle-dev-local
+
+
         # 1. Curation Audit: Check dependencies against Curation policies
       - name: Run Curation Audit
         run: jf ca --format=table --threads=100
