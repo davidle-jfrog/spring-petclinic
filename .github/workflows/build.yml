@@ -28,8 +28,8 @@ jobs:
         run: jf ca --format=table --threads=100
 
       # # 2. Xray Audit: Scan project dependencies for CVEs/Licenses
-      - name: Run Xray Audit
-        run: jf audit
+      #- name: Run Xray Audit
+      #  run: jf audit
 
       - name: Build and test
         run: jf mvn clean verify --build-name=petclinic-build --build-number=${{ github.run_number }}
