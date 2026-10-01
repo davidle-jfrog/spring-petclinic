@@ -1,0 +1,33 @@
+# GitHub Actions: add these secrets in Settings → Secrets
+# JFROG_URL = https://<your-instance>.jfrog.io
+# JFROG_USER = <your-email>
+# JFROG_ACCESS_TOKEN = <your-api-key>
+
+# .github/workflows/build.yml
+name: CI Pipeline
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jfrog/setup-jfrog-cli@v4
+        env:
+          JF_URL: ${{ secrets.JFROG_URL }}
+          JF_ACCESS_TOKEN: ${{ secrets.JFROG_ACCESS_TOKEN }}
+      - name: Configure Maven to use Artifactory
+        run: jf mvnc --repo-resolve-releases spring-pet-clinic-libs-snapshot --repo-deploy-releases spring-pet-clinic-libs-snapshot-local
+
+      - name: Build and test
+        run: jf mvn clean verify --build-name=petclinic-build --build-number=${{ github.run_number }}
+
+      - name: Build Docker image
+        run: |
+          docker build -t davidle123test.jfrog.io/spring-pet-clinic-docker/petclinic:${{ github.sha }} .
+          jf docker push davidle123test.jfrog.io/spring-pet-clinic-docker/petclinic:${{ github.sha }} --build-name=petclinic-build --build-number=${{ github.run_number }}
+
+
+      - name: Publish build info
+        run: |
+          jf rt build-collect-env petclinic-build ${{ github.run_number }}
+          jf rt build-publish petclinic-build ${{ github.run_number }}
