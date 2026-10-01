@@ -16,7 +16,7 @@ jobs:
           JF_URL: ${{ secrets.JFROG_URL }}
           JF_ACCESS_TOKEN: ${{ secrets.JFROG_ACCESS_TOKEN }}
       - name: Configure Maven to use Artifactory
-        run: jf mvnc --repo-resolve-releases spring-pet-clinic-libs-snapshot --repo-deploy-releases spring-pet-clinic-libs-snapshot-local
+        run: jf mvnc --repo-resolve-releases spring-pet-clinic-libs-snapshot --repo-deploy-releases spring-pet-clinic-libs-snapshot-local --repo-resolve-snapshots spring-pet-clinic-libs-snapshot --repo-deploy-snapshots spring-pet-clinic-libs-snapshot-local 
 
       - name: Build and test
         run: jf mvn clean verify --build-name=petclinic-build --build-number=${{ github.run_number }}
